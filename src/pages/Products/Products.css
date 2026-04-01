@@ -1,0 +1,20 @@
+.products {
+  min-height: 100%;
+}
+
+.ant-table-tbody > tr:hover .ant-tag {
+  background: #e6f7ff;
+  border-color: #91d5ff;
+  color: #1890ff;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .ant-card-extra {
+    margin-top: 8px;
+  }
+
+  .ant-card-head-title {
+    font-size: 16px;
+  }
+}

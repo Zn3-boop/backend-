@@ -1,0 +1,19 @@
+.users {
+  padding: 20px;
+}
+
+.users .ant-card {
+  margin-bottom: 20px;
+}
+
+.users .ant-table {
+  margin-top: 20px;
+}
+
+.users .ant-form {
+  margin-top: 10px;
+}
+
+.users .ant-form-item {
+  margin-bottom: 16px;
+}

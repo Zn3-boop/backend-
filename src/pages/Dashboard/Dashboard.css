@@ -1,0 +1,29 @@
+.dashboard {
+  min-height: 100%;
+}
+
+.stats-row {
+  margin-bottom: 24px;
+}
+
+.charts-row {
+  margin-bottom: 24px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .charts-row .ant-col {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-row .ant-col {
+    margin-bottom: 16px;
+  }
+
+  .charts-row .ant-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
