@@ -23,27 +23,6 @@
 - **日期处理**: Day.js
 - **模拟数据**: Mock.js
 
-## 项目结构
-
-```
-src/
-├── components/      # 公共组件
-│   ├── charts/     # 图表组件
-│   ├── common/     # 通用组件
-│   └── layout/     # 布局组件
-├── context/        # React Context
-├── hooks/          # 自定义 Hooks
-├── pages/          # 页面组件
-│   ├── Dashboard/  # 仪表板
-│   ├── Login/      # 登录页
-│   ├── Orders/     # 订单管理
-│   ├── Products/   # 商品管理
-│   ├── Settings/   # 系统设置
-│   └── Users/      # 用户管理
-├── services/       # API 服务
-├── types/          # TypeScript 类型定义
-└── utils/          # 工具函数
-```
 
 ## 快速开始
 
