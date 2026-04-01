@@ -1,25 +1,25 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
-import { UserProvider } from './context/UserContext';
-import { OrderProvider } from './context/OrderContext';
-import { ProductProvider } from './context/ProductContext';
-import { StatisticsProvider } from './context/StatisticsContext';
+import { store } from './store';
+import { QueryProvider } from './query';
 import { PrivateRoute } from './utils/auth.jsx';
-import MainLayout from './components/layout/MainLayout';
-import Login from './pages/Login/Login';
-import Dashboard from './pages/Dashboard/Dashboard';
-import Orders from './pages/Orders/Orders';
-import Products from './pages/Products/Products';
+import MainLayout from './components/layout/MainLayout_reactquery';
+import Login from './pages/Login/Login_reactquery';
+import Orders from './pages/Orders/Orders_reactquery';
+import Products from './pages/Products/Products_reactquery';
 import Users from './pages/Users/Users';
 import Settings from './pages/Settings/Settings';
 import './App.css';
+import Dashboard from './pages/Dashboard/Dashboard_reactquery';
 
 function App() {
   return (
-    <ConfigProvider locale={zhCN}>
-      <UserProvider>
+    <Provider store={store}>
+      <QueryProvider>
+        <ConfigProvider locale={zhCN}>
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -34,27 +34,15 @@ function App() {
             >
               <Route 
                 index 
-                element={
-                  <StatisticsProvider>
-                    <Dashboard />
-                  </StatisticsProvider>
-                } 
+element={<Dashboard />} 
               />
               <Route 
                 path="orders" 
-                element={
-                  <OrderProvider>
-                    <Orders />
-                  </OrderProvider>
-                } 
+element={<Orders />} 
               />
               <Route 
                 path="products" 
-                element={
-                  <ProductProvider>
-                    <Products />
-                  </ProductProvider>
-                } 
+element={<Products />} 
               />
               <Route path="users" element={<Users />} />
               <Route path="settings" element={<Settings />} />
@@ -63,8 +51,9 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
-      </UserProvider>
-    </ConfigProvider>
+      </ConfigProvider>
+    </QueryProvider>
+  </Provider>
   );
 }
 

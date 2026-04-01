@@ -297,4 +297,124 @@ Mock.mock('/api/statistics/category-ratio', 'get', () => {
   };
 });
 
+// 获取用户列表
+Mock.mock(/\/api\/users(\?.*)?$/, 'get', (options) => {
+  const url = new URL(options.url, 'http://localhost');
+  const page = parseInt(url.searchParams.get('page') || '1');
+  const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
+  const keyword = url.searchParams.get('keyword') || '';
+  const role = url.searchParams.get('role') || '';
+
+  // 筛选
+  let filteredUsers = users;
+  if (keyword) {
+    filteredUsers = users.filter(user =>
+      user.username.includes(keyword) || user.email.includes(keyword)
+    );
+  }
+  if (role) {
+    filteredUsers = filteredUsers.filter(user => user.role === role);
+  }
+
+  // 分页
+  const total = filteredUsers.length;
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  const pageData = filteredUsers.slice(start, end);
+
+  return {
+    code: 200,
+    data: {
+      list: pageData,
+      total,
+      page,
+      pageSize
+    },
+    message: '成功'
+  };
+});
+
+// 新增用户
+Mock.mock('/api/users', 'post', (options) => {
+  const userData = JSON.parse(options.body);
+  const newUser = {
+    id: users.length + 1,
+    ...userData,
+    createTime: Mock.Random.datetime('yyyy-MM-dd HH:mm:ss')
+  };
+  users.push(newUser);
+  return {
+    code: 200,
+    data: newUser,
+    message: '新增成功'
+  };
+});
+
+// 编辑用户
+Mock.mock(/\/api\/users\/\d+$/, 'put', (options) => {
+  const userData = JSON.parse(options.body);
+  const id = parseInt(options.url.match(/\/api\/users\/(\d+)$/)[1]);
+  const index = users.findIndex(u => u.id === id);
+  if (index !== -1) {
+    users[index] = { ...users[index], ...userData };
+    return {
+      code: 200,
+      data: users[index],
+      message: '编辑成功'
+    };
+  }
+  return {
+    code: 404,
+    data: null,
+    message: '用户不存在'
+  };
+});
+
+// 删除用户
+Mock.mock(/\/api\/users\/\d+$/, 'delete', (options) => {
+  const id = parseInt(options.url.match(/\/api\/users\/(\d+)$/)[1]);
+  const index = users.findIndex(u => u.id === id);
+  if (index !== -1) {
+    users.splice(index, 1);
+    return {
+      code: 200,
+      data: null,
+      message: '删除成功'
+    };
+  }
+  return {
+    code: 404,
+    data: null,
+    message: '用户不存在'
+  };
+});
+
+// 获取系统设置
+Mock.mock('/api/settings', 'get', () => {
+  return {
+    code: 200,
+    data: {
+      siteName: '电商后台管理系统',
+      siteDescription: '专业的电商后台管理系统',
+      enableRegistration: true,
+      enableEmailVerification: false,
+      sessionTimeout: 30,
+      maxLoginAttempts: 5,
+      enableEmailNotifications: true,
+      enableSmsNotifications: false
+    },
+    message: '成功'
+  };
+});
+
+// 保存系统设置
+Mock.mock('/api/settings', 'put', (options) => {
+  const settings = JSON.parse(options.body);
+  return {
+    code: 200,
+    data: settings,
+    message: '保存成功'
+  };
+});
+
 export default Mock;

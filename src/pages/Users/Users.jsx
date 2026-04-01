@@ -1,35 +1,19 @@
 import React, { memo } from 'react';
-import { Card, Table, Tag, Space, Button, Modal, Form, Input, Select, Popconfirm } from 'antd';
+import { Card, Table, Tag, Space, Button, Modal, Form, Input, Select, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { useUserList, useDeleteUser, useAddUser, useEditUser } from '../../query/hooks';
 import './Users.css';
 
 const { Option } = Select;
 
 const Users = memo(() => {
-  // 模拟用户数据
-  const userList = [
-    {
-      id: 1,
-      username: '管理员',
-      email: 'admin@example.com',
-      role: 'admin',
-      createTime: '2024-01-01 00:00:00'
-    },
-    {
-      id: 2,
-      username: '运营专员',
-      email: 'operation@example.com',
-      role: 'operation',
-      createTime: '2024-01-02 00:00:00'
-    },
-    {
-      id: 3,
-      username: '客服',
-      email: 'service@example.com',
-      role: 'service',
-      createTime: '2024-01-03 00:00:00'
-    }
-  ];
+  // 使用React Query获取用户列表
+  const { data: userListData = {}, isLoading } = useUserList();
+  const userList = userListData.list || [];
+  const total = userListData.total || 0;
+  const deleteUserMutation = useDeleteUser();
+  const addUserMutation = useAddUser();
+  const editUserMutation = useEditUser();
 
   const [modalVisible, setModalVisible] = React.useState(false);
   const [editingUser, setEditingUser] = React.useState(null);
@@ -67,18 +51,31 @@ const Users = memo(() => {
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
-      // 这里可以添加保存用户的逻辑
-      console.log('保存用户:', values);
+      if (editingUser) {
+        // 编辑用户
+        await editUserMutation.mutateAsync({ id: editingUser.id, data: values });
+        message.success('编辑用户成功');
+      } else {
+        // 新增用户
+        await addUserMutation.mutateAsync(values);
+        message.success('新增用户成功');
+      }
       closeModal();
     } catch (error) {
-      console.error('表单验证失败:', error);
+      console.error('保存用户失败:', error);
+      message.error(editingUser ? '编辑用户失败' : '新增用户失败');
     }
   };
 
   // 删除用户
-  const handleDelete = (id) => {
-    // 这里可以添加删除用户的逻辑
-    console.log('删除用户:', id);
+  const handleDelete = async (id) => {
+    try {
+      await deleteUserMutation.mutateAsync(id);
+      message.success('删除用户成功');
+    } catch (error) {
+      console.error('删除用户失败:', error);
+      message.error('删除用户失败');
+    }
   };
 
   // 表格列定义
@@ -170,10 +167,14 @@ const Users = memo(() => {
           columns={columns}
           dataSource={userList}
           rowKey="id"
+          loading={isLoading}
           pagination={{
+            total,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total) => `共 ${total} 条`
+            showTotal: (total) => `共 ${total} 条`,
+            current: userListData.page || 1,
+            pageSize: userListData.pageSize || 10
           }}
         />
       </Card>

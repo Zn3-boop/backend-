@@ -1,0 +1,60 @@
+/* 虚拟表格容器 */
+.virtual-table-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 虚拟表格头部 */
+.virtual-table-header {
+  display: flex;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.88);
+  padding: 16px;
+}
+
+.virtual-table-header-cell {
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 虚拟表格主体 */
+.virtual-table-body {
+  border-top: none;
+}
+
+/* 虚拟表格行 */
+.virtual-table-row {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px;
+  transition: background-color 0.3s;
+}
+
+.virtual-table-row:hover {
+  background-color: #fafafa;
+}
+
+/* 虚拟表格单元格 */
+.virtual-table-cell {
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 加载状态 */
+.virtual-table-loading {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.45);
+}

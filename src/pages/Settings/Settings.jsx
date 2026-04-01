@@ -1,12 +1,14 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Card, Form, Input, Switch, Select, Button, message, InputNumber } from 'antd';
+import { useSettings, useSaveSettings } from '../../query/hooks';
 import './Settings.css';
 
 const { Option } = Select;
 
 const Settings = memo(() => {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const { data: settings = {}, isLoading } = useSettings();
+  const saveSettingsMutation = useSaveSettings();
 
   // 系统设置默认值
   const defaultSettings = {
@@ -15,22 +17,27 @@ const Settings = memo(() => {
     enableRegistration: true,
     enableEmailVerification: false,
     sessionTimeout: 30,
-    maxLoginAttempts: 5
+    maxLoginAttempts: 5,
+    enableEmailNotifications: true,
+    enableSmsNotifications: false
   };
+
+  // 当设置数据加载完成后，更新表单
+  useEffect(() => {
+    if (Object.keys(settings).length > 0) {
+      form.setFieldsValue(settings);
+    }
+  }, [settings, form]);
 
   // 保存设置
   const handleSave = async () => {
     try {
-      setLoading(true);
       const values = await form.validateFields();
-      // 这里可以添加保存设置的逻辑
-      console.log('保存设置:', values);
+      await saveSettingsMutation.mutateAsync(values);
       message.success('设置保存成功');
     } catch (error) {
-      console.error('表单验证失败:', error);
+      console.error('保存设置失败:', error);
       message.error('设置保存失败');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -126,7 +133,7 @@ const Settings = memo(() => {
             <Button
               type="primary"
               onClick={handleSave}
-              loading={loading}
+              loading={saveSettingsMutation.isPending}
               style={{ marginRight: 10 }}
             >
               保存设置

@@ -1,4 +1,4 @@
-import { useUser } from '../context/UserContext';
+import { useAppSelector } from '../store/hooks';
 import { Navigate } from 'react-router-dom';
 
 /**
@@ -11,15 +11,17 @@ import { Navigate } from 'react-router-dom';
  * @returns {ReactNode} 受保护的路由组件
  */
 export const PrivateRoute = ({ children, requiredRole = null }) => {
-  const { userInfo, hasPermission } = useUser();
+  const token = getToken();
+  const userInfo = useAppSelector(state => state.user.userInfo);
+  const role = useAppSelector(state => state.user.role);
 
   // 未登录，跳转到登录页
-  if (!userInfo) {
+  if (!token) {
     return <Navigate to="/login" replace />;
   }
 
   // 权限不足，跳转到首页
-  if (requiredRole && !hasPermission(requiredRole)) {
+  if (requiredRole && !checkRolePermission(role, requiredRole)) {
     return <Navigate to="/" replace />;
   }
 
