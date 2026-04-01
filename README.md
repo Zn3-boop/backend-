@@ -84,17 +84,6 @@ npm run preview
 - mockjs: ^1.1.0
 - @ant-design/icons: ^5.2.6
 
-## 开发说明
-
-### Context 使用
-
-项目使用 React Context 进行状态管理：
-- `AuthContext`: 认证状态
-- `OrderContext`: 订单状态
-- `ProductContext`: 商品状态
-- `StatisticsContext`: 统计数据
-- `UserContext`: 用户状态
-
 ### 自定义 Hooks
 
 - `useAuth`: 认证相关逻辑
@@ -104,6 +93,3 @@ npm run preview
 
 所有 API 请求都通过 `services` 目录下的模块进行管理。
 
-## License
-
-MIT
